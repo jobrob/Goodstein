@@ -14,46 +14,56 @@ public class InputUI extends JFrame
 	
 	public void initComponents()
 	{
-		final String[][] fields =
+		final String[][] inputs =
 		{
 				{"Number:", "13"},
 				{"Base:", "2"},
 		};
+		final String[] results = {"Base notation:" , "Next Term:"};
 		
-		final JTextField[] textFields = new JTextField[fields.length];
+		final JTextField[] inputsFields = new JTextField[inputs.length];
 		
 		JPanel p = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0.5;
-		for (int i = 0; i <fields.length; i++)
+		for (int i = 0; i <inputs.length; i++)
 		{
 			c.gridx = 0;
 			c.gridy = i;
 			c.gridwidth = 1;
-			JLabel label = new JLabel(fields[i][0], JLabel.TRAILING);
+			JLabel label = new JLabel(inputs[i][0], JLabel.TRAILING);
 			p.add(label, c);
 			
-			textFields[i] = new JTextField();
-			textFields[i].setText(fields[i][1]);
+			inputsFields[i] = new JTextField();
+			inputsFields[i].setText(inputs[i][1]);
 			c.gridx = 2;
 			c.gridy = i;
 			c.gridwidth = 2;
-			p.add(textFields[i], c);
+			p.add(inputsFields[i], c);
 		}
 		c.gridx = 0;
-		c.gridy = fields.length+1;
-		JLabel results = new JLabel("Result");
-		p.add(results,c);
+		c.gridy = inputs.length+1;
+		JLabel baseNotation = new JLabel(results[0], JLabel.TRAILING);
+		p.add(baseNotation,c);
+		
+		c.gridy = inputs.length+2;
+		JLabel nextTerm = new JLabel(results[1], JLabel.TRAILING);
+		p.add(nextTerm,c);
+		
 		
 		c.gridx = 2;
-		c.gridy = fields.length +1;
-		JLabel answer = new JLabel("" + 0);
-		p.add(answer,c);
+		c.gridy = inputs.length +1;
+		JLabel baseFormLabel = new JLabel("" + 0);
+		p.add(baseFormLabel,c);
+		
+		c.gridy = inputs.length +2;
+		JLabel nextTermLabel = new JLabel("" + 0);
+		p.add(nextTermLabel,c);
 		
 		JButton button = new JButton(BUTTON_TEXT);
 		c.gridx = 3;
-		c.gridy = fields.length+2;
+		c.gridy = inputs.length+3;
 		c.gridheight = 2;
 		
 		button.addActionListener(
@@ -73,10 +83,18 @@ public class InputUI extends JFrame
 							{
 								try
 								{
-									int x = Goodstien.nextTerm(Integer.valueOf(textFields[0].getText()),Integer.valueOf(textFields[1].getText()));
-									answer.setText("" + x);
-									textFields[0].setText("" + x);
-									textFields[1].setText("" + (Integer.valueOf(textFields[1].getText()) +1 ));
+									int[] base = Goodstien.baseN(Integer.valueOf(inputsFields[0].getText()),Integer.valueOf(inputsFields[1].getText()));
+									String baseForm = "";
+									for (int i = base.length-1; i>=0;i--)
+									{
+										baseForm += ("" + base[i] + ".");
+									}
+									
+									baseFormLabel.setText(baseForm.substring(0,baseForm.length()-1));
+									int x = Goodstien.nextTerm(Integer.valueOf(inputsFields[0].getText()),Integer.valueOf(inputsFields[1].getText()));
+									nextTermLabel.setText("" + x);
+									inputsFields[0].setText("" + x);
+									inputsFields[1].setText("" + (Integer.valueOf(inputsFields[1].getText()) +1 ));
 									button.setText(BUTTON_TEXT);
 									button.setEnabled(true);
 								}
@@ -93,10 +111,12 @@ public class InputUI extends JFrame
 				}
 		);
 		p.add(button, c);
-		JFrame frame = new JFrame("Test");
+		JFrame frame = new JFrame("Goodstien");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(p);
 		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 	}
 }
